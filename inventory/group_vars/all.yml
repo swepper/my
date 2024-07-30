@@ -1,0 +1,16 @@
+---
+db_user: "myapp"
+db_password: "myapp"
+db_name: "myapp"
+db_port: '5432'
+db_host: "127.0.0.1"
+rails_log_to_stdout: '1'
+rails_env: "production"
+secret_key_base: "qwerty"
+nginx_port: "80/tcp"
+ruby_install_from_source: true
+ruby_download_url: https://cache.ruby-lang.org/pub/ruby/2.5/ruby-2.5.1.tar.gz
+ruby_version: "2.5.1"
+ruby_install_bundler: false
+
+...

@@ -1,0 +1,2 @@
+[myapp]
+192.168.56.67 ansible_user=vagrant ansible_password=vagrant

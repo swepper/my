@@ -1,0 +1,63 @@
+
+---
+- name: "Install epel"
+  yum:
+    name: 
+      - "epel-release"
+    state: latest
+
+- name: "Install dependency packages"
+  dnf: "name={{ item }} state=present enablerepo=devel"
+  with_items:
+    - libxslt-devel
+    - libffi-devel
+    - nodejs
+
+- name: "copy app"
+  copy:
+    src: "files/myapp/"
+    dest: "/app/"
+#    remote_src: true
+    mode: "preserve"
+
+- name: "Install Bundler"
+  gem:
+    name: "bundler"
+    version: "1.16.2"
+    state: "present"
+    user_install: false
+
+- name: "Add ruby symlinks"
+  file:
+    src: "/usr/local/bin/bundle"
+    dest: "/usr/bin/bundle"
+    state: "link"
+    force: true
+
+- name: "build nokogiri"
+  command: "bundle config build.nokogiri --use-system-libraries"
+  args:
+    chdir: "/app"
+
+- name: "Install application dependencies"
+  command: "bundle install --clean --force --no-cache --without development"
+  args:
+    chdir: "/app"
+  ignore_errors: true
+
+- name: "copy service template"
+  ansible.builtin.template:
+    src: "myapp.service.j2"
+    dest: "/etc/systemd/system/myapp.service"
+    owner: "root"
+    group: "root"
+    mode: '644'
+    backup: true
+
+- name: "start myapp"
+  ansible.builtin.service:
+    name: "myapp"
+    state: "started"
+    enabled: true
+
+...
